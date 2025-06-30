@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: int_customers_filter
+    description: The list of customers filtered
+  - name: int_orders_filter
+    description: The list of orders filtered

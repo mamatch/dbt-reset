@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: dbt_raw
+    tables:
+      - name: customers
+        description: the raw table containing all the customers
+        config:
+          enabled: true
+      - name: orders
+        description: the raw table containing all the orders
+        config:
+          enabled: true    

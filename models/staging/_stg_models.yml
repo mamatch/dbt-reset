@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_raw__customers
+    description: Bronze representation of customers
+    columns:
+      - name: customer_id
+        description: The unique id of the customer
+        tests:
+          - not_null
+          - unique
+      - name: customer_name
+        description: The full name of the customer
+        tests:
+          - not_null
+      - name: customer_age
+        description: The age of the customer
+        tests:
+          - not_null
+  - name: stg_raw__orders
+    description: Bronze layer of the orders
+    columns:
+      - name: order_id
+        description: The unique id of the order
+        tests:
+          - not_null
+          - unique
+      - name: order_customer_id
+        description: The customer's id
+        tests:
+          - not_null
+      - name: order_amount
+        description: The amount of the order 
+        tests:
+          - not_null

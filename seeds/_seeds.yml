@@ -1,0 +1,10 @@
+version: 2
+
+seeds:
+  - name: countries
+    description: list of countries(code and name)
+    config:
+      schema: country_schema
+      column_types:
+        country_code: string
+        country_name: string
