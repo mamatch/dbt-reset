@@ -1,0 +1,41 @@
+steps:
+  - name: 'python:3.11'
+    id: Create Json file, profile, run and test 
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        pip install dbt-core dbt-bigquery
+        echo "$$DBT_KEYFILE_JSON" > /tmp/keyfile.json
+
+        mkdir -p ~/.dbt
+        cat > ~/.dbt/profiles.yml <<EOF
+        bq_project:
+          target: dev
+          outputs:
+            dev:
+              type: bigquery
+              method: service-account
+              project: "$$DBT_PROJECT_ID"
+              dataset: "$$DBT_DATASET"
+              location: "$$DBT_LOCATION"
+              keyfile: /tmp/keyfile.json
+        EOF
+
+        dbt run
+        dbt test
+    secretEnv: ['DBT_KEYFILE_JSON', 'DBT_PROJECT_ID', 'DBT_DATASET', 'DBT_LOCATION']
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/eternal-flux-464108-t0/secrets/DBT_KEYFILE_JSON/versions/latest
+      env: DBT_KEYFILE_JSON
+    - versionName: projects/eternal-flux-464108-t0/secrets/DBT_PROJECT_ID/versions/latest
+      env: DBT_PROJECT_ID
+    - versionName: projects/eternal-flux-464108-t0/secrets/DBT_DATASET/versions/latest
+      env: DBT_DATASET
+    - versionName: projects/eternal-flux-464108-t0/secrets/DBT_LOCATION/versions/latest
+      env: DBT_LOCATION
+
+options:
+  logging: CLOUD_LOGGING_ONLY
