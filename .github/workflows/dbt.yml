@@ -13,9 +13,36 @@ jobs:
         steps:
             - name: Install dbt-bigquery
               run: pip install dbt-bigquery
+
             - name: Checkout repo
               uses: actions/checkout@v4
+
+            - name: Write service account keys
+              run: echo "${{secrets.DBT_KEYFILE_JSON}}" | base64 -d > /tmp/keyfile.json  
+
+            - name: Test service account json keyfile
+              run: cat /tmp/keyfile.json | jq . >/dev/null || echo "Invalid JSON"
+
+            - name: Create profile.yml
+              run: |
+                mkdir -p ~/.dbt
+                cat > ~/.dbt/profiles.yml <<EOF
+                bq_project:
+                    target: dev
+                    outputs:
+                        dev:
+                            type: bigquery
+                            method: service-account
+                            project: "${{ secrets.DBT_PROJECT_ID }}"
+                            dataset: "${{ secrets.DBT_DATASET }}"
+                            location: "${{ secrets.DBT_LOCATION }}"
+                            keyfile: /tmp/keyfile.json
+                EOF
+
+            - name: Check profiles
+              run: cat ~/.dbt/profiles.yml
+
             - name: Run dbt
               run: |
-                dbt run
-                dbt test
+                dbt run 
+                dbt test 
