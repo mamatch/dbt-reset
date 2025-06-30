@@ -1,0 +1,21 @@
+name: dbt workflow on bigquery
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+        container:
+            image: ghcr.io/dbt-labs/dbt-core:latest
+        steps:
+            - name: Install dbt-bigquery
+              run: pip install dbt-bigquery
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Run dbt
+              run: |
+                dbt run
+                dbt test
